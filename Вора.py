@@ -3,6 +3,8 @@ import pyttsx3
 import webbrowser
 from pydub import AudioSegment
 from pydub.playback import play # подключаем библиотеку для воспроизведения mp3
+import requests
+import json
 
 text = 'какой-нибудь текст'
 tts = pyttsx3.init()
@@ -57,7 +59,15 @@ def record_volume():
             import Парсер
         if text == "как зовут мою девушку":
             tts.say("Я хотела бы быть вашей девушкой, но это пока невозможно. Вашу девушку зовут Инесса.")
-            tts.runAndWait()        
+            tts.runAndWait()
+        if text == "какая сейчас погода":
+            url = "https://api.openweathermap.org/data/2.5/onecall?lat=%s&lon=%s&appid=%s&units=metric&lang=ru" % ("55.669952", "37.610324", "2d3ba9a0a3d3d4d9c8f605d44b60bb15")
+            температура = json.loads(requests.get(url).text)["current"]["temp"]
+            осадки = json.loads(requests.get(url).text)["current"]["weather"][0]["description"]
+
+            tts.say((round(температура), "градусов.", осадки))
+            print(round(температура), "градусов", осадки)
+            tts.runAndWait()              
         if text == "включи новую песню":
             tts.say("Включаю. Но скоро я сама научусь петь")
             tts.runAndWait()
